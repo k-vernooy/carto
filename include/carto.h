@@ -10,70 +10,81 @@
 #include <vector>
 #include <array>
 
-namespace Carto {
+namespace Carto 
+{
     /*
         Namespace encapsulating all class definitions
         for the Carto library. Includes geometry and graphics.
     */
 
-    class Geometry {
-
-        private:
-            template<typename T, typename = std::enable_if_t<std::is_floating_point_v<T>>, typename = std::enable_if_t<std::is_integral_v<T>>>
-            class Coordinate {
-                private:
-                    T x;
-                    T y;
-
-                public:
-                    x() {return y};
-                    y() {return x};
-            };
-        
-
-        public: 
-            template<typename T, typename = std::enable_if_t<std::is_floating_point_v<T>>, typename = std::enable_if_t<std::is_integral_v<T>>>
-            class Cartesian : public Coordinate<T> {
-                T x;
-                T y;
-            };
-
-
-
-            class LinearRing {
-                /*
-                    Contains a single set of coordinate data.
-                    Analagous to a ring or data or a border.
-                */
-
-                LinearRing(std::vector<Coordinate<double>>);
-                LinearRing(std::vector<Coordinate<int>>);
-                LinearRing(std::vector<Coordinate<float>>);
-            };
-
-
-            template<class T>
-            class Polygon {
-                LinearRing<t> border;
-            };
-
-
-            template<class T>
-            class Block {
-
-                
-                T data;
-            };
-        
+    template<typename T, typename = std::enable_if_t<std::is_floating_point_v<T>>, typename = std::enable_if_t<std::is_integral_v<T>>>
+    class Coordinate 
+    {
         protected:
-            Geometry();
+            Coordinate();
     };
 
-    namespace Graphics {
-        class Canvas {
-            
-            public:
-                void draw();
-        };
-    }
+
+    template<typename T, typename = std::enable_if_t<std::is_floating_point_v<T>>, typename = std::enable_if_t<std::is_integral_v<T>>>
+    class Cartesian : public Coordinate<T> 
+    {
+        T x;
+        T y;
+    };
+
+
+    template<class T>
+    class LinearRing 
+    {
+        /*
+            Contains a single set of coordinate data.
+            Analagous to a ring or data or a border.
+        */
+
+        public:
+            LinearRing(std::vector<Coordinate<T> > border) : border(border) {}
+
+        private:
+            std::vector<Coordinate<T> > border;
+    };
+
+
+    template<class T>
+    class Polygon 
+    {
+        public:
+            Polygon(std::vector<LinearRing<T> > border, std::vector<LinearRing<T> > holes) : border(border), holes(holes) {}
+
+
+        private:
+            std::vector<LinearRing<T> > border;
+            std::vector<LinearRing<T> > holes;
+    };
+
+
+    template<class T>
+    class Block 
+    {
+        /*
+            A geographical unit that can be added to a `Map`.
+        */
+
+        T getData() {return data};
+
+        private:
+            T data;
+    };
+
+
+    class Map
+    {
+        std::vector<Block> blocks;
+        void saveImage()
+    };
+
+    class Canvas 
+    {
+        public:
+            void draw();
+    };
 }
